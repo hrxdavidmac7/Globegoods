@@ -1,0 +1,297 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Scrambler</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Poppins",sans-serif;
+        }
+        body{
+            display: flex;
+            padding: 0 10px;
+            align-items: center;
+            justify-content:center ;
+            min-height: 100vh;
+            background: #9d14dc;
+        }
+        .container{
+            width: 420px;
+            border-radius: 10px;
+            background: #222;
+        }
+        .container h2{
+            font-size: 28px;
+            font-weight: 600;
+            padding: 20px 25px;
+            border-bottom: 1px solid #333;
+            color: #fff;
+        }
+        .container .content{
+            margin: 25px 20px 35px;
+        }
+        .container .word{
+            user-select: none;
+            font-size: 36px;
+            font-weight: 600;
+            text-align: center;
+            letter-spacing: 18px;
+            margin-right: -18px;
+            word-break: break-all;
+            text-transform: uppercase;
+            color: #5372f0;
+        }
+        .content .details{
+            margin: 25px 0 20px;
+        }   
+        .details p{
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: #bbb;
+        }  
+        .content input{
+            width: 100%;
+            height: 50px;
+            outline: none;
+            padding: 0 15px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 1px solid #333;
+            background-color: #111;
+            color: #bbb;
+        }
+        .content input:focus{
+            border-color: #5372f0;
+            background-color: #222;
+            
+
+        }
+        .content input::placeholder{
+            color: #555;
+        }
+        .content input:focus::placeholder{
+        color: #bbb;
+        }
+        .content .buttons{
+            display: flex;
+            margin-top: 20px;
+            justify-content: space-between;
+        }
+        .buttons button{
+            border: none;
+            outline: none;
+            color: #fff;
+            cursor:pointer;
+            padding: 14px 0;
+            font-size: 16px;
+            border-radius: 8px;
+            width: calc(50% - 6px);
+
+        }
+        .buttons button:active{
+            transform: scale(0.97);
+        }
+        .buttons .refresh-word{
+            background: #5372f0;
+        }
+        .buttons .refresh-word:hover{
+            background: #2c52ed; 
+        }
+        .buttons .submit-word{
+            background: #5372f0;
+        }
+        .buttons .submit-word:hover{
+            background: #2c52ed; 
+        }
+        
+        
+
+    </style>
+</head>
+<body>
+    
+
+    
+    
+    <div class="container">
+        <h2>Word Scrambler</h2>
+        <div class="content">
+            <p class="word"></p>
+            <div class="details">
+                <p class="hint">HINT: <span></span></p>
+                <p class="time">TIME LEFT: <span><b>15</b>s</span></p>
+            </div>
+            <input type="text" spellcheck="false" placeholder="Enter a valid word">
+            <div class="buttons">
+                <button class="refresh-word">Refresh Word</button>
+                <button class="submit-word">Submit Word</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const words = [
+    { word: "addition",hint: "Process of adding numbers"},
+    {word: "meeting",hint: "Event in which people come together"},
+    { word: "numbers", hint: "Math symbol used for counting"},
+    { word: "ancient", hint: "Very old; from a long time ago" },
+    { word: "brilliant", hint: "Very bright and shining" },
+    { word: "curious", hint: "Eager to know or learn something" },
+    { word: "dazzling", hint: "Bright and dazzling; shining intensely" },
+    { word: "energetic", hint: "Full of energy and enthusiasm" },
+    { word: "fascinate", hint: "To attract and hold someone's interest" },
+    { word: "gentle", hint: "Kind and mild in temperament" },
+    { word: "humble", hint: "Having a modest opinion of oneself" },
+    { word: "innocent", hint: "Not guilty; free from wrongdoing" },
+    { word: "jolly", hint: "Cheerful and happy in a lively way" },
+    { word: "keen", hint: "Sharp and eager; showing interest" },
+    { word: "lively", hint: "Full of life and energy" },
+    { word: "apple", hint: "A red or green fruit that grows on trees" },
+    { word: "bird", hint: "A feathered creature that flies" },
+    { word: "cat", hint: "A furry animal that purrs and meows" },
+    { word: "dog", hint: "A loyal and friendly pet" },
+    { word: "elephant", hint: "A large, gray animal with a long trunk" },
+    { word: "flower", hint: "A colorful plant that blooms" },
+    { word: "garden", hint: "A place where plants and flowers grow" },
+    { word: "happy", hint: "Feeling joyful and content" },
+    { word: "ice cream", hint: "A cold and delicious dessert" },
+    { word: "jump", hint: "To leap off the ground" },
+    { word: "kite", hint: "A toy that flies in the air on a string" },
+    { word: "lion", hint: "A fierce and powerful wild animal" },
+    { word: "moon", hint: "The natural satellite that orbits Earth" },
+    { word: "nest", hint: "A safe home for birds and their eggs" },
+    { word: "ocean", hint: "A vast body of saltwater" },
+    { word: "pencil", hint: "A writing tool used on paper" },
+    { word: "quiet", hint: "Silent and peaceful" },
+    { word: "rainbow", hint: "A colorful arch in the sky after rain" },
+    { word: "sunshine", hint: "Bright and warm sunlight" },
+    { word: "tree", hint: "A tall plant with branches and leaves" },
+    { word: "umbrella", hint: "A tool used to stay dry in the rain" },
+    { word: "vase", hint: "A container for holding flowers" },
+    { word: "water", hint: "A clear liquid essential for life" },
+    { word: "xylophone", hint: "A musical instrument with wooden bars" },
+    { word: "yummy", hint: "Delicious and tasty" },
+    { word: "zebra", hint: "A striped black-and-white animal" },
+    { word: "mysterious", hint: "Difficult to understand or explain" },
+    { word: "naive", hint: "Lacking experience and understanding; innocent" },
+    { word: "optimistic", hint: "Having a positive outlook; expecting the best outcome" },
+    { word: "patient", hint: "Willing to wait without getting annoyed" },
+    { word: "quaint", hint: "Charmingly old-fashioned" },
+    { word: "resourceful", hint: "Skilled at finding solutions; creative" },
+    { word: "sincere", hint: "Genuine and honest in feeling" },
+    { word: "triumphant", hint: "Experiencing victory or success" },
+    { word: "upbeat", hint: "Optimistic and cheerful" },
+    { word: "vivid", hint: "Bright and distinct; clear in color" },
+    { word: "witty", hint: "Quick and clever in humor" },
+    { word: "xenial", hint: "Relating to hospitality, especially to visiting strangers" },
+    { word: "youthful", hint: "Having the qualities of youth; young at heart" },
+    { word: "zealous", hint: "Enthusiastic and passionate" },
+    { word: "aberration", hint: "A departure from what is normal, usual, or expected" },
+    { word: "benevolent", hint: "Kind and generous" },
+    { word: "catalyst", hint: "Something that causes an important event to happen" },
+    { word: "debilitate", hint: "To make someone weak and infirm" },
+    { word: "egregious", hint: "Outstandingly bad or shocking" },
+    { word: "facetious", hint: "Treating serious issues with inappropriate humor" },
+    { word: "garrulous", hint: "Excessively talkative, especially on trivial matters" },
+    { word: "harangue", hint: "A lengthy and aggressive speech" },
+    { word: "iconoclast", hint: "A person who attacks or criticizes cherished beliefs or institutions" },
+    { word: "juxtapose", hint: "To place or deal with things in close proximity for contrast" },
+    { word: "kaleidoscope", hint: "A constantly changing pattern or sequence of elements" },
+    { word: "languish", hint: "To lose or lack vitality; to become weak or feeble" },
+    { word: "maelstrom", hint: "A powerful whirlpool in the sea; a situation of confused movement" },
+    { word: "nefarious", hint: "Wicked, villainous, or criminal" },
+    { word: "obfuscate", hint: "To render unclear, obscure, or unintelligible" },
+    { word: "perfunctory", hint: "Done without care or interest; in a routine manner" },
+    { word: "quixotic", hint: "Exceedingly idealistic; unrealistic and impractical" },
+    { word: "resilient", hint: "Able to withstand or recover from difficult conditions" },
+    { word: "serendipity", hint: "The occurrence of events by chance in a happy or beneficial way" },
+    { word: "trepidation", hint: "A feeling of fear or agitation about something that may happen" },
+    { word: "ubiquitous", hint: "Present, appearing, or found everywhere" },
+    { word: "vex", hint: "To make someone feel annoyed, frustrated, or worried" },
+    { word: "capable", hint: "Having the ability to do something" },
+    { word: "diligent", hint: "Hardworking and careful in work" },
+    { word: "eloquent", hint: "Fluent and persuasive in speech" },
+    { word: "flexible", hint: "Able to bend or adapt easily" },
+    { word: "gratitude", hint: "Thankfulness; feeling grateful" },
+    { word: "humble", hint: "Having a modest opinion of oneself" },
+    { word: "integrity", hint: "Honesty and moral principles" },
+    { word: "jovial", hint: "Cheerful and friendly in mood" },
+    { word: "kindness", hint: "The quality of being friendly, generous, and considerate" },
+    { word: "luminous", hint: "Bright or shining, especially in the dark" },
+    { word: "meticulous", hint: "Showing great attention to detail; very careful and precise" },
+    { word: "nurture", hint: "To care for and encourage the growth or development of someone or something" },
+    { word: "optimistic", hint: "Having a positive outlook; expecting the best outcome" },
+    { word: "persevere", hint: "To continue in a course of action despite challenges" },
+    { word: "quaint", hint: "Charmingly old-fashioned" },
+    { word: "resilient", hint: "Able to recover quickly from difficulties" },
+    { word: "sincere", hint: "Genuine and honest in feeling" },
+    { word: "tenacious", hint: "Holding firmly; persistent" },
+    { word: "upbeat", hint: "Optimistic and cheerful" },
+    { word: "vibrant", hint: "Full of energy and life; colorful" },
+    { word: "wholesome", hint: "Conducive to physical or moral well-being" },
+    { word: "xenial", hint: "Relating to hospitality, especially to visiting strangers" },
+    { word: "yearn", hint: "To have a strong desire or longing for something" },
+    { word: "zealous", hint: "Enthusiastic and passionate"},  
+        ];
+
+        const wordText = document.querySelector(".word");
+        const hintText = document.querySelector(".hint span");
+        const timeText = document.querySelector(".time b");
+        const inputField = document.querySelector("input");
+        const refreshBtn = document.querySelector(".refresh-word");
+        const submitBtn = document.querySelector(".submit-word");
+
+        let correctWord, timer;
+
+        const initTimer = (maxTime) => {
+            clearInterval(timer);
+            timer = setInterval(() => {
+                if (maxTime > 0) {
+                    maxTime--;
+                    timeText.innerText = maxTime;
+                } else {
+                    alert(`Time's up! ${correctWord.toUpperCase()} was the correct word.`);
+                    initGame();
+                }
+            }, 1000);
+        };
+
+        const initGame = () => {
+            initTimer(15);
+            let randomObj = words[Math.floor(Math.random() * words.length)];
+            correctWord = randomObj.word;
+            let wordArray = randomObj.word.split("");
+            for (let i = wordArray.length - 1; i > 0; i--) {
+                let j = Math.floor(Math.random() * (i + 1));
+                [wordArray[i], wordArray[j]] = [wordArray[j], wordArray[i]];
+            }
+            wordText.innerText = wordArray.join("");
+            hintText.innerText = randomObj.hint;
+            inputField.value = "";
+            inputField.setAttribute("maxlength", correctWord.length);
+            inputField.focus(); // Focus on the input field
+        };
+
+        const checkWord = () => {
+            let userWord = inputField.value.toLowerCase();
+            if (!userWord) return alert("Please enter the word to check!");
+            if (userWord === correctWord) {
+                alert(`Congratulations! ${correctWord.toUpperCase()} is the correct word.`);
+            } else {
+                alert(`Oops! ${userWord} is not the correct word.`);
+            }
+            initGame();
+        };
+
+        refreshBtn.addEventListener("click", initGame);
+        submitBtn.addEventListener("click", checkWord);
+
+        initGame(); // It will Start the game when the page loads
+    </script>
+</body>
+</html>
